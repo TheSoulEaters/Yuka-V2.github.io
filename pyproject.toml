@@ -1,0 +1,39 @@
+# --- Bagian Metadata Proyek ---
+# Informasi dasar tentang proyek Anda.
+[tool.poetry]
+name = "bot-profesional-discord"
+version = "0.1.0"
+description = "Bot Discord serbaguna dengan arsitektur berbasis fitur yang modern."
+authors = ["Nama Anda <email@anda.com>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/USERNAME/REPO" # Tautkan ke repositori GitHub Anda
+
+# --- Dependensi Utama (Production) ---
+# Library yang dibutuhkan oleh bot untuk bisa berjalan di server produksi.
+[tool.poetry.dependencies]
+python = "^3.10" # Kompatibel dengan Python 3.10 atau versi lebih baru (tapi di bawah 4.0)
+"discord.py" = "^2.3.2" # Library inti untuk berinteraksi dengan API Discord
+"python-dotenv" = "^1.0.1" # Untuk memuat konfigurasi dari file .env
+"Pillow" = "^10.3.0" # Untuk manipulasi gambar (misal: banner selamat datang)
+"aiosqlite" = "^0.20.0" # Driver database SQLite asinkron, bagus untuk memulai
+
+# Dependensi opsional untuk fitur musik. Tambahkan jika perlu.
+# "yt-dlp" = "^2024.5.27"
+# "PyNaCl" = "^1.5.0"
+
+
+# --- Dependensi Pengembangan (Development) ---
+# Alat bantu yang hanya dibutuhkan saat pengembangan dan tidak perlu diinstal di server produksi.
+[tool.poetry.group.dev.dependencies]
+ruff = "^0.4.5" # Linter & formatter kode yang sangat cepat untuk menjaga kualitas kode
+pytest = "^8.2.1" # Framework untuk menjalankan tes otomatis
+pytest-asyncio = "^0.23.6" # Plugin untuk pytest agar bisa menguji kode asinkron (wajib untuk discord.py)
+
+
+# --- Konfigurasi Sistem Build ---
+# Bagian ini memberi tahu alat seperti 'pip' cara membangun proyek Anda.
+# Biasanya tidak perlu diubah.
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

@@ -1,0 +1,68 @@
+# Nama alur kerja (workflow) yang akan muncul di tab "Actions" di GitHub
+name: Python Application CI
+
+# --- Pemicu (Trigger) ---
+# Menentukan kapan alur kerja ini akan dijalankan
+on:
+  # Jalankan saat ada 'push' ke branch 'main' atau 'develop'
+  push:
+    branches: [ "main", "develop" ]
+  # Jalankan juga saat ada 'pull request' yang menargetkan branch 'main' atau 'develop'
+  pull_request:
+    branches: [ "main", "develop" ]
+
+# --- Pekerjaan (Jobs) ---
+# Daftar pekerjaan yang akan dijalankan. Kita hanya butuh satu pekerjaan utama.
+jobs:
+  build:
+    # Menentukan sistem operasi tempat pekerjaan ini akan berjalan
+    runs-on: ubuntu-latest
+
+    # Strategi untuk menjalankan pekerjaan ini pada beberapa versi Python
+    strategy:
+      matrix:
+        python-version: ["3.10", "3.11"] # Tes pada Python 3.10 dan 3.11
+
+    # --- Langkah-langkah (Steps) ---
+    # Urutan langkah yang akan dieksekusi
+    steps:
+      # Langkah 1: Mengunduh kode dari repositori Anda ke dalam runner
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      # Langkah 2: Menyiapkan versi Python sesuai dengan matrix di atas
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      # Langkah 3: Menginstal Poetry (manajer dependensi yang kita pilih di pyproject.toml)
+      - name: Install Poetry
+        uses: snok/install-poetry@v1
+        with:
+          virtualenvs-create: true
+          virtualenvs-in-project: true
+
+      # Langkah 4: Menginstal dependensi proyek dari file pyproject.toml dan poetry.lock
+      # Menggunakan cache untuk mempercepat proses di waktu mendatang
+      - name: Load cached venv
+        id: cached-poetry-dependencies
+        uses: actions/cache@v4
+        with:
+          path: .venv
+          key: venv-${{ runner.os }}-${{ steps.setup-python.outputs.python-version }}-${{ hashFiles('**/poetry.lock') }}
+      - name: Install dependencies
+        if: steps.cached-poetry-dependencies.outputs.cache-hit != 'true'
+        run: poetry install --no-interaction --no-root
+
+      # Langkah 5: Menjalankan Linter untuk memeriksa kualitas dan gaya penulisan kode
+      # Kita menggunakan 'Ruff', linter yang sangat cepat dan modern
+      - name: Lint with Ruff
+        run: |
+          poetry run ruff check .
+
+      # Langkah 6: Menjalankan Tes Otomatis menggunakan 'pytest'
+      # Perintah ini akan mencari dan menjalankan semua file tes di dalam folder /tests
+      - name: Test with pytest
+        run: |
+          poetry run pytest
