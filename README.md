@@ -1,7 +1,7 @@
 
 <div align="center">
   <img src="URL_LOGO_BOT_ANDA_DI_SINI" alt="Logo Bot" width="150"/>
-  <h1>Nama Bot Profesional Anda</h1>
+  <h1>Yuka</h1>
   <p>Bot Discord serbaguna yang dirancang untuk menjadi asisten andalan di server Anda, dengan fitur moderasi, utilitas, dan kustomisasi yang canggih.</p>
   
   <p>
